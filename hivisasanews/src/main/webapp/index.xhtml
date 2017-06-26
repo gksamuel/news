@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pm="http://primefaces.org/mobile">
+
+    <f:view renderKitId="PRIMEFACES_MOBILE" />
+    <h:head>
+        <link type="text/css" rel="stylesheet" href="#{request.contextPath}/css/syntaxhighlighter/syntaxhighlighter.css" />
+    </h:head>
+
+    <h:body>
+
+        <pm:page id="main">
+            <pm:header title="News" swatch="b"></pm:header>
+
+            <pm:content>
+                <h:form id="mainForm">
+                    <p:growl id="messages" showDetail="true" />
+
+                    <p:dataList var="group" value="#{news.groups}">
+                        <p:commandLink value="#{group.title}" action="pm:group?transition=slide" update=":group:groupTitle :group:groupForm:entries">
+                            <f:setPropertyActionListener value="#{group}" target="#{news.selectedGroup}" />
+                        </p:commandLink>
+                    </p:dataList>
+                </h:form>
+            </pm:content>
+
+            <pm:footer title="News from all over the World!" />
+        </pm:page>
+
+        <pm:page id="group">
+            <pm:header swatch="b">
+                <p:button styleClass="ui-btn-left ui-btn-inline" value="Back" icon="ui-icon-arrow-l" outcome="pm:main?transition=slide" />
+                <h1><h:outputText id="groupTitle" value="#{news.selectedGroup.title}" /></h1>
+            </pm:header>
+
+            <pm:content>
+                <h:form id="groupForm">
+                    <p:dataList id="entries" var="newsEntry" value="#{news.selectedGroup.entries}">
+                        <p:commandLink value="#{newsEntry.title}" action="pm:entry?transition=slide" update=":entry:entryDetail">
+                            <f:setPropertyActionListener value="#{newsEntry}" target="#{news.selectedEntry}" />
+                        </p:commandLink>
+                    </p:dataList>
+                </h:form>
+            </pm:content>
+        </pm:page>
+
+        <pm:page id="entry">
+            <pm:header title="" swatch="b">
+                <p:button styleClass="ui-btn-left ui-btn-inline" value="Back" icon="ui-icon-arrow-l" outcome="pm:group?transition=slide" />
+            </pm:header>
+            <pm:content>
+                <h:outputText id="entryDetail" value="#{news.selectedEntry.content}" escape="false"/>
+            </pm:content>
+        </pm:page>
+
+        <script language="javascript" src="#{request.contextPath}/syntaxhighlighter/scripts/sh.js"></script>
+        <script language="javascript">
+            SyntaxHighlighter.all();
+        </script>
+    </h:body>
+</html>
